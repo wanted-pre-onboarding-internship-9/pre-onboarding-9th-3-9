@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface IData {
   [timeStamp: string]: {
     id: string;
@@ -7,5 +9,7 @@ export interface IData {
 }
 
 interface IChartProps {
-  data: IData;
+  data?: IData;
+  selectedData: string;
+  setSelectedData: Dispatch<SetStateAction<string>>;
 }
