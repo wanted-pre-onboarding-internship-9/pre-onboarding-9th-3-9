@@ -15,6 +15,7 @@ function Chart({ data }: IChartProps) {
   const barMinValue = Math.min(...barValues);
   const areaMaxValue = Math.max(...areaValues);
   const barMaxValue = Math.max(...barValues);
+  const areaMinValue = Math.min(...areaValues);
 
   return (
     <ApexChart
@@ -43,6 +44,13 @@ function Chart({ data }: IChartProps) {
           width: '100%',
           height: '100%',
           background: 'transparent',
+          type: 'area',
+          stacked: true,
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '50%',
+          },
         },
         xaxis: {
           categories: xAxis,
@@ -52,13 +60,13 @@ function Chart({ data }: IChartProps) {
           {
             title: { text: 'Area Values' },
             min: 0,
-            max: areaMaxValue * 2,
+            max: areaMaxValue,
           },
           {
             opposite: true,
             title: { text: 'Bar Values' },
             min: 0,
-            max: barMaxValue,
+            max: barMaxValue * 2,
           },
         ],
 

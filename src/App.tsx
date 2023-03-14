@@ -30,5 +30,4 @@ const StyledChartBox = styled.div`
   position: relative;
   margin: 0 auto;
   width: 50%;
-  height: 50%;
 `;
