@@ -1,178 +1,106 @@
-import { useState, useEffect } from 'react';
-import ReactApexChart from 'react-apexcharts';
-import styled from 'styled-components';
-import chartServices from './apis/chartService';
+import { useEffect, useState } from 'react';
+
+import mockData from './apis/instance';
+import Chart from './components/Chart';
+import { TChart } from './types/chartTypes';
 
 function App() {
 
-  const [charts, setCharts] = useState([]);
-  let tets: any;
+  const [charts, setCharts] = useState<TChart>({
+    labels: [],
+    ids: [],
+    areas: [],
+    bars: [],
+  });
+
+  let isInit = false;
 
   useEffect(() => {
-    chartServices.getChartAX()
-      .then((response) => {
-        setCharts(response.data.response);
-        tets = response.data.response;
-      }).catch((error) => {
-        console.log(error);
-      })
-  }, [])
+    if (!isInit) {
+      isInit = true;
 
-  useEffect(() => {
-    const bars = Object.values(charts).map((item: any) => item.value_bar);
-    const areas = Object.values(charts).map((item: any) => item.value_area);
-    const ids = Object.values(charts).map((item: any) => item.id)[0];
+      mockData.get('')
+        .then(response => {
+          const responseData = response.data.response;
 
-    console.log("bars", tets);
-    console.log(Object.keys(charts));
+          const labels = Object.keys(responseData) as string[];
+          const ids = Object.values(responseData).map((item: any) => item.id as string);
+          const areas = Object.values(responseData).map((item: any) => item.value_area as number);
+          const bars = Object.values(responseData).map((item: any) => item.value_bar as number);
 
-  }, [charts])
-
-  const state: any = {
-    series: [{
-      name: 'bar',
-      type: 'column',
-      data: Object.values(charts).map((item: any) => item.value_bar)
-    }, {
-      name: 'area',
-      type: 'area',
-      data: Object.values(charts).map((item: any) => item.value_area)
-    }],
-    options: {
-      chart: {
-        height: 350,
-        type: 'line',
-        stacked: false,
-      },
-      stroke: {
-        width: [0, 2, 5],
-        curve: 'smooth'
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '50%'
-        }
-      },
-
-      fill: {
-        opacity: [0.85, 0.25, 1],
-        gradient: {
-          inverseColors: false,
-          shade: 'light',
-          type: "vertical",
-          opacityFrom: 0.85,
-          opacityTo: 0.55,
-          stops: [0, 100, 100, 100]
-        }
-      },
-      labels: Object.keys(charts),//["2023-02-01 14:32:00", "2023-02-01 14:32:05", "2023-02-01 14:32:10", "2023-02-01 14:32:20"],
-      markers: {
-        size: 0
-      },
-      xaxis: {
-        type: 'datetime',
-      },
-      yaxis: [
-        {
-          axisTicks: {
-            show: true
-          },
-          axisBorder: {
-            show: true,
-            color: "#008FFB"
-          },
-          labels: {
-            style: {
-              color: "#008FFB"
-            }
-          },
-          title: {
-            text: "bar",
-            style: {
-              color: "#008FFB"
-            },
-            rotate: 0,
-            offsetX: -10,
-            offsetY: -115,
-          },
-          tooltip: {
-            enabled: true
-          }
-        },
-        {
-          opposite: true,
-          axisTicks: {
-            show: true
-          },
-          axisBorder: {
-            show: true,
-            color: "#00E396"
-          },
-          labels: {
-            style: {
-              color: "#00E396"
-            }
-          },
-          title: {
-            text: "area",
-            style: {
-              color: "#00E396"
-            },
-            rotate: 0,
-            offsetX: 10,
-            offsetY: -115,
-          }
-        }
-      ],
-      tooltip: {
-        shared: true,
-        intersect: false,
-        x: {
-          show: true,
-          formatter: function (x: any, { dataPointIndex }: any) {
-            if (typeof dataPointIndex !== "undefined")
-              return Object.values(charts).map((item: any) => item.id)[dataPointIndex];
-          },
-        },
-        y: {
-          formatter: function (y: any) {
-            if (typeof y !== "undefined") {
-              return y.toFixed(0) + " points";
-            }
-            return y;
-          }
-        },
-        onDatasetHover: {
-          highlightDataSeries: true,
-        },
-      }
+          setCharts({ labels, ids, areas, bars });
+        })
+        .catch(error => {
+          console.log(error);
+        })
     }
-  }
+  }, []);
 
-  type TtooltipX<T> = {
-    dataPointIndex: number,
-    series: T[],
-    seriesIndex: number,
-    w?: any
-  }
+  const [stateFill, setStateFill] = useState<any>({
+    opacity: [0.85, 0.65, 1],
+    gradient: {
+      inverseColors: true,
+      shade: 'light',
+      type: 'vertical',
+      opacityFrom: 0.85,
+      opacityTo: 0.55,
+      stops: [0, 100, 100, 100],
+    },
+  });
 
+  const onClickTag = (id: string) => {
+
+    const findIndexes = charts.ids
+      .map((item, index) => {
+        if (item === id) return index;
+        else return -1;
+      })
+      .filter((item) => item !== -1);
+
+    const cfill = {
+      opacity: [0.85, 0.65, 1],
+      colors: [function ({ dataPointIndex, seriesIndex }: any) {
+
+        if (findIndexes.includes(dataPointIndex)) {
+          if (seriesIndex === 0) {
+            return '#0d9df2'
+          } else {
+            return '#59edbb'
+          }
+        } else {
+          if (seriesIndex === 0) {
+            return '#cde9fc'
+          } else {
+            return '#e5fcf4'
+          }
+        }
+
+      }],
+    }
+
+    setStateFill(cfill)
+  }
 
   return (
     <div>
-      <StyledBox />
-      <div id="chart">
-        <ReactApexChart options={state.options} series={state.series} type="bar" height={350} />
-      </div>
+      <Chart
+        labels={charts.labels}
+        ids={charts.ids}
+        areas={charts.areas}
+        bars={charts.bars}
+        fill={stateFill}
+        onClickTag={onClickTag}
+      />
+      {
+        [...new Set(charts.ids)].map((item) => (
+          <button key={item} onClick={() => onClickTag(item)}>{item}</button>
+        ))
+      }
+
     </div>
   );
 }
 
-
 export default App;
 
-const StyledBox = styled.div`
-  width: 300px;
-  height: 300px;
-  background-color: tomato;
-`;
 
