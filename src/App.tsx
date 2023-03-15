@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 
+import Chart from './components/Chart';
+
 function App() {
   return (
-    <div>
-      <StyledBox />
-    </div>
+    <StApp>
+      <h1>Flexsys</h1>
+      <Chart />
+    </StApp>
   );
 }
 
 export default App;
 
-const StyledBox = styled.div`
-  width: 300px;
-  height: 300px;
-  background-color: tomato;
+const StApp = styled.div`
+  text-align: center;
 `;
