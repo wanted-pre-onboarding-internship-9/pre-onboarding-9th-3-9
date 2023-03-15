@@ -1,17 +1,16 @@
-import styled from 'styled-components';
+import { Outlet } from 'react-router-dom';
+
+import Footer from './components/Footer';
+import Header from './components/Header';
 
 function App() {
   return (
-    <div>
-      <StyledBox />
-    </div>
+    <>
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
   );
 }
 
 export default App;
-
-const StyledBox = styled.div`
-  width: 300px;
-  height: 300px;
-  background-color: tomato;
-`;
