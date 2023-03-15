@@ -1,7 +1,6 @@
-import { IChartNestedObjects } from '../types/chartTypes';
 import instance from './instance';
 
-export const getChartApi = async (): Promise<IChartNestedObjects> => {
+export const getChartApi = async () => {
   const response = await instance.get('');
   return response.data.response;
 };

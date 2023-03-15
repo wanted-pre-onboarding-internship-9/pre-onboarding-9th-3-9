@@ -1,57 +1,27 @@
-import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { renderToString } from 'react-dom/server';
 
-import { getChartApi } from '../apis/chartApi';
-import { IChartNestedObjects, IChartSingleObject } from '../types/chartTypes';
+import { useChartData } from '../hooks/useChartData';
+import Tooltip from './Tooltip';
 
 const Chart = () => {
-  const [chartNestedObjects, setChartNestedObjects] =
-    useState<IChartNestedObjects>();
-
-  useEffect(() => {
-    getChartApi().then(response => {
-      setChartNestedObjects(response);
-    });
-  }, []);
-
-  const valueAreaArray: number[] = chartNestedObjects
-    ? Object.values(chartNestedObjects).map(
-        (item: IChartSingleObject) => item.value_area
-      )
-    : [];
-
-  const valueBarArray: number[] = chartNestedObjects
-    ? Object.values(chartNestedObjects).map(
-        (item: IChartSingleObject) => item.value_bar
-      )
-    : [];
-
-  const dateTimeArray = chartNestedObjects
-    ? Object.keys(chartNestedObjects)
-    : [];
+  const { dateTimeArray, idArray, areaArray, barArray } = useChartData();
 
   const series = [
     {
       name: 'value_bar',
       type: 'column',
-      data: valueBarArray,
+      data: barArray,
     },
     {
       name: 'value_area',
       type: 'area',
-      data: valueAreaArray,
+      data: areaArray,
     },
   ];
 
   const options = {
-    fill: {
-      type: 'solid',
-      opacity: [0.35, 1],
-    },
     labels: dateTimeArray,
-    markers: {
-      size: 0,
-    },
     yaxis: [
       {
         title: {
@@ -66,28 +36,16 @@ const Chart = () => {
       },
     ],
     tooltip: {
-      custom({
-        series,
-        seriesIndex,
-        dataPointIndex,
-        w,
-      }: {
-        series: any[];
-        seriesIndex: number;
-        dataPointIndex: number;
-        w: any;
-      }) {
-        const tooltipContent =
-          chartNestedObjects && dateTimeArray[dataPointIndex]
-            ? `<ul>
-            <li><p>id</p>: ${
-              chartNestedObjects[dateTimeArray[dataPointIndex]].id
-            }</li>
-            <li><p>value_area</p>: '${series[0][dataPointIndex]}'</li>
-            <li><p>value_bar</p>: '${series[1][dataPointIndex]}'</li>
-          </ul>`
-            : '';
-        return tooltipContent;
+      custom: ({ dataPointIndex }: { dataPointIndex: number }) => {
+        return renderToString(
+          <Tooltip
+            data={{
+              id: idArray[dataPointIndex],
+              area: barArray[dataPointIndex],
+              bar: barArray[dataPointIndex],
+            }}
+          />
+        );
       },
     },
   };
