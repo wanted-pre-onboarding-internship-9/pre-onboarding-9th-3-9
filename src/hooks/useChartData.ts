@@ -15,8 +15,16 @@ export const useChartData = () => {
     getChartApi().then((response: { [key: string]: ItemData }) => {
       const dateTimeArray = Object.keys(response);
       const idArray = Object.values(response).map(item => item.id);
-      const areaArray = Object.values(response).map(item => item.value_area);
-      const barArray = Object.values(response).map(item => item.value_bar);
+      const areaArray = Object.values(response).map((item, index) => ({
+        x: dateTimeArray[index],
+        y: item.value_area,
+        fillColor: '#26E7A6',
+      }));
+      const barArray = Object.values(response).map((item, index) => ({
+        x: dateTimeArray[index],
+        y: item.value_bar,
+        fillColor: '#008FFB',
+      }));
       setChartData({ dateTimeArray, idArray, areaArray, barArray });
     });
   }, []);

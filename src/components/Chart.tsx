@@ -1,12 +1,16 @@
 import ReactApexChart from 'react-apexcharts';
 import { renderToString } from 'react-dom/server';
 
-import { useChartData } from '../hooks/useChartData';
+import { ChartProps } from '../types/chartTypes';
 import Tooltip from './Tooltip';
 
-const Chart = () => {
-  const { dateTimeArray, idArray, areaArray, barArray } = useChartData();
-
+const Chart = ({
+  dateTimeArray,
+  idArray,
+  barArrayState: barArray,
+  areaArrayState: areaArray,
+  handleFilter,
+}: ChartProps) => {
   const series = [
     {
       name: 'value_bar',
@@ -21,6 +25,18 @@ const Chart = () => {
   ];
 
   const options = {
+    stroke: {
+      show: false,
+    },
+    chart: {
+      events: {
+        dataPointSelection: (event: any, chartContext: any, config: any) =>
+          handleFilter(idArray[config.dataPointIndex]),
+      },
+    },
+    markers: {
+      size: 5,
+    },
     labels: dateTimeArray,
     yaxis: [
       {
@@ -36,13 +52,24 @@ const Chart = () => {
       },
     ],
     tooltip: {
-      custom: ({ dataPointIndex }: { dataPointIndex: number }) => {
+      custom: ({
+        series,
+        dataPointIndex,
+      }: {
+        series: any;
+        seriesIndex: any;
+        dataPointIndex: number;
+        w: any;
+      }) => {
+        const valueId = idArray[dataPointIndex];
+        const valueBar = series[0][dataPointIndex];
+        const valueArea = series[1][dataPointIndex];
         return renderToString(
           <Tooltip
             data={{
-              id: idArray[dataPointIndex],
-              area: barArray[dataPointIndex],
-              bar: barArray[dataPointIndex],
+              valueId,
+              valueArea,
+              valueBar,
             }}
           />
         );

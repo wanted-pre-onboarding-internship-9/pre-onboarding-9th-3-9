@@ -1,8 +1,22 @@
 export type ChartData = {
   dateTimeArray: string[];
   idArray: string[];
-  areaArray: number[];
-  barArray: number[];
+  areaArray: YAxisData[];
+  barArray: YAxisData[];
+};
+
+export type YAxisData = {
+  x: string;
+  y: number;
+  fillColor: string;
+};
+
+export type ChartProps = {
+  dateTimeArray: string[];
+  idArray: string[];
+  barArrayState: YAxisData[];
+  areaArrayState: YAxisData[];
+  handleFilter: (id: string) => void;
 };
 
 export type ItemData = {
