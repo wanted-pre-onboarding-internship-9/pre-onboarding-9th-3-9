@@ -12,3 +12,12 @@ export interface IChartData {
   value_bar: number;
   time?: string;
 }
+
+export interface ITooltip {
+  active?: boolean;
+  payload?: ITooltipPayload[];
+}
+
+interface ITooltipPayload {
+  payload: IChartData;
+}

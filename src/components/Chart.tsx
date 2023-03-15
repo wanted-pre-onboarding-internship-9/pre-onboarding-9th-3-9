@@ -13,6 +13,7 @@ import {
 
 import { DataAPI } from '../apis/instance';
 import { IChartData, IMockData } from '../types/types';
+import CustomTooltip from './CustomTooltip';
 
 const Chart = () => {
   const [mockData, setMockData] = useState<IMockData>();
@@ -66,7 +67,7 @@ const Chart = () => {
             position: 'insideLeft',
           }}
         />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <CartesianGrid stroke='#f5f5f5' />
         <Area
