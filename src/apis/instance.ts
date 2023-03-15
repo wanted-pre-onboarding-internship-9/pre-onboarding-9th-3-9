@@ -10,3 +10,6 @@ const instance = axios.create({
 });
 
 export default instance;
+
+// 차트 데이터
+export const chartApi = () => instance.get('');
