@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import { SetURLSearchParams } from 'react-router-dom';
 
-export interface IData {
+interface IData {
   [timeStamp: string]: {
     id: string;
     value_area: number;
@@ -10,6 +10,6 @@ export interface IData {
 
 interface IChartProps {
   data?: IData;
-  selectedData: string;
-  setSelectedData: Dispatch<SetStateAction<string>>;
+  selectedData: string | null;
+  setSelectedData: SetURLSearchParams;
 }

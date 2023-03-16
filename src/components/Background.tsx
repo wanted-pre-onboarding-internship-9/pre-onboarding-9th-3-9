@@ -9,7 +9,7 @@ export default React.memo(Background);
 
 const StyledBackground = styled.div`
   background: linear-gradient(-45deg, #084464, #000101, #433abe);
-  background-size: 300% 300%;
+  background-size: 200% 200%;
   animation: move-background 20s ease-in-out infinite;
   width: 100vw;
   height: 100vh;

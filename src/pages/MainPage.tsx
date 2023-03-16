@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Background from '../components/Background';
@@ -9,14 +9,15 @@ import useData from '../hooks/useData';
 
 function MainPage() {
   const { data } = useData();
-  const [selectedRegion, setSelectedRegion] = useState<string>('whole');
+  const [selectedRegion, setSelectedRegion] = useSearchParams();
+
   const regions = Object.values(data || {}).map(properties => properties.id);
   const dedupRegions = regions.filter(
     (element, index) => regions.indexOf(element) === index
   );
 
   const handleFilter = (region: string) => {
-    setSelectedRegion(region);
+    setSelectedRegion({ id: region });
   };
 
   return (
@@ -26,14 +27,14 @@ function MainPage() {
       <StyledButtonBox>
         <Button
           text='전체'
-          isActivated={'whole' === selectedRegion}
+          isActivated={'whole' === selectedRegion.get('id')}
           onClick={() => handleFilter('whole')}
         />
         {dedupRegions.map(region => (
           <Button
             key={region}
             text={region}
-            isActivated={region === selectedRegion}
+            isActivated={region === selectedRegion.get('id')}
             onClick={() => handleFilter(region)}
           />
         ))}
@@ -41,7 +42,7 @@ function MainPage() {
       <StyledChartBox>
         <Chart
           data={data}
-          selectedData={selectedRegion}
+          selectedData={selectedRegion.get('id')}
           setSelectedData={setSelectedRegion}
         />
       </StyledChartBox>

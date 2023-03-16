@@ -3,7 +3,11 @@ import ApexChart from 'react-apexcharts';
 import { commaPerThousand, convertDateToTime } from '../common/utils';
 import { IChartProps } from '../types';
 
-function Chart({ data = {}, selectedData, setSelectedData }: IChartProps) {
+function Chart({
+  data = {},
+  selectedData = null,
+  setSelectedData,
+}: IChartProps) {
   const xAxis = Object.keys(data).map(date => convertDateToTime(date));
   const areaValues = Object.values(data).map(
     properties => properties.value_area
