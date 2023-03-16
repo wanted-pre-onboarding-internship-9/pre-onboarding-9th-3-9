@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Area,
@@ -14,40 +13,13 @@ import {
 } from 'recharts';
 import styled from 'styled-components';
 
-import { DataAPI } from '../apis/instance';
-import { IChartData, IMockData } from '../types/types';
+import useGetData from '../hooks/useGetData';
 import CustomTooltip from './CustomTooltip';
 
 const Chart = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [mockData, setMockData] = useState<IMockData>();
-
-  const getData = () => {
-    DataAPI.getData().then(res => {
-      setMockData(res.data.response);
-    });
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const chartData: IChartData[] = Object.entries(mockData || [])?.map(
-    ([key, { id, value_area, value_bar }]) => ({
-      id: id,
-      value_area: value_area,
-      value_bar: value_bar,
-      time: key,
-    })
-  );
-
-  const valueId = Object.values(mockData || [])?.map(item => item.id);
-  const filterArea: string[] = valueId.filter(
-    (item, index) => valueId.indexOf(item) === index
-  );
-  filterArea.push('전체');
+  const { chartData, filterArea } = useGetData();
 
   return (
     <>
@@ -87,7 +59,7 @@ const Chart = () => {
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <CartesianGrid stroke='#f5f5f5' />
+          <CartesianGrid stroke='#dcdcdc' />
           <Area
             yAxisId='left'
             type='monotone'
