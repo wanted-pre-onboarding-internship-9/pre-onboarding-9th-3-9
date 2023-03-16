@@ -56,26 +56,33 @@ const Chart = () => {
               angle: -90,
               position: 'insideLeft',
             }}
+            tickCount={10}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <CartesianGrid stroke='#dcdcdc' />
-          <Area
-            yAxisId='left'
-            type='monotone'
-            dataKey='value_area'
-            fill='#8884d8'
-            stroke='#8884d8'
-          />
-          <Bar dataKey='value_bar' yAxisId='right' barSize={20} fill='#413ea0'>
+          <Bar
+            dataKey='value_bar'
+            yAxisId='right'
+            barSize={20}
+            fill='#413ea0'
+            fillOpacity={0.5}>
             {chartData?.map(item => (
               <Cell
                 key={item.time}
                 fill={item.id === id ? '#FFAF00' : '#413ea0'}
+                fillOpacity={item.id === id ? 1 : 0.5}
                 onClick={() => navigate('/' + item.id)}
               />
             ))}
           </Bar>
+          <Area
+            yAxisId='left'
+            type='monotone'
+            dataKey='value_area'
+            fill='#14148C'
+            stroke='#8884d8'
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </>
