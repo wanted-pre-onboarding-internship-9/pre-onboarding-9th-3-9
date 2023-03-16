@@ -1,44 +1,48 @@
-import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
 type TChartProp = {
-  labels: string[]
-  ids: string[]
-  areas: number[]
-  bars: number[]
-  findIdx: number[]
-  onClickTag: (id: string) => void
-}
+  labels: string[];
+  ids: string[];
+  areas: number[];
+  bars: number[];
+  findIdx: number[];
+  onClickTag: (id: string) => void;
+};
 
-const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) => {
+const Chart = ({
+  labels,
+  ids,
+  areas,
+  bars,
+  findIdx,
+  onClickTag,
+}: TChartProp) => {
   const series = [
     {
       name: 'bar',
       type: 'column',
       data: bars.map((value, idx) => {
-        const color =
-          findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
+        const color = findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
         return {
           x: labels[idx],
           y: value,
           fillColor: color,
-        }
+        };
       }),
     },
     {
       name: 'area',
       type: 'area',
       data: areas.map((value, idx) => {
-        const color =
-          findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
+        const color = findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
         return {
           x: labels[idx],
           y: value,
           fillColor: color,
-        }
+        };
       }),
     },
-  ]
+  ];
 
   const options: any = {
     chart: {
@@ -47,16 +51,16 @@ const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) =>
       type: 'line',
       stacked: false,
       events: {
-        dataPointSelection: function (event: any, chartContext: any, config: any) {
-          if (config.dataPointIndex !== null) {
+        click: function (
+          event: any,
+          chartContext: any,
+          config: any
+        ) {
+          if (config.dataPointIndex !== -1) {
             onClickTag(ids[config.dataPointIndex] as string);
           }
         },
-      }
-    },
-    stroke: {
-      width: [0, 2, 5],
-      curve: 'smooth',
+      },
     },
     plotOptions: {
       bar: {
@@ -75,7 +79,7 @@ const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) =>
         opacityFrom: 0.85,
         opacityTo: 0.55,
         stops: [0, 100, 100, 100],
-      }
+      },
     },
     labels: labels,
     markers: {
@@ -142,8 +146,7 @@ const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) =>
       x: {
         show: true,
         formatter: function (x: any, { dataPointIndex }: any) {
-          if (typeof dataPointIndex !== 'undefined')
-            return ids[dataPointIndex];
+          if (typeof dataPointIndex !== 'undefined') return ids[dataPointIndex];
         },
       },
       y: {
@@ -155,14 +158,11 @@ const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) =>
         },
       },
     },
-  }
+  };
 
-  return <ReactApexChart
-    options={options}
-    series={series}
-    type='bar'
-    height={350}
-  />;
+  return (
+    <ReactApexChart options={options} series={series} type='bar' height={350} />
+  );
 };
 
 export default Chart;

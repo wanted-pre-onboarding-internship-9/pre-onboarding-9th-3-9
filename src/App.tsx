@@ -1,94 +1,50 @@
-import { useEffect, useState } from 'react';
-
-import mockData from './apis/instance';
 import Chart from './components/Chart';
 import { TChart } from './types/chartTypes';
+import useMockData from './hooks/useMockData';
 
 function App() {
 
-  const [charts, setCharts] = useState<TChart>({
-    labels: [],
-    ids: [],
-    areas: [],
-    bars: [],
-  });
+  const [mockData, indexesFindId, setIndexesFindId] = useMockData();
 
-  const [findIdx, setFindIdx] = useState<number[]>([]);
-
-  let isInit = false;
-
-  useEffect(() => {
-    if (!isInit) {
-      isInit = true;
-
-      mockData.get('')
-        .then(response => {
-          const responseData = response.data.response;
-
-          const labels = Object.keys(responseData) as string[];
-          const ids = Object.values(responseData).map((item: any) => item.id as string);
-          const areas = Object.values(responseData).map((item: any) => item.value_area as number);
-          const bars = Object.values(responseData).map((item: any) => item.value_bar as number);
-
-          setFindIdx(ids
-            .map((item, index) => {
-              return index;
-            }));
-
-          setCharts({ labels, ids, areas, bars });
-
-        })
-        .catch(error => {
-          console.log(error);
-        })
-    }
-  }, []);
-
+  const { labels, ids, areas, bars }: TChart = mockData;
 
   const onClickTag = (id: string) => {
-
-    const findIndexes = charts.ids
-      .map((item, index) => {
+    const findIndexes = ids
+      .map((item: string, index: number) => {
         if (item === id) return index;
         else return -1;
       })
-      .filter((item) => item !== -1);
+      .filter((mapItem: number) => mapItem !== -1);
 
-    const all = charts.ids
-      .map((item, index) => {
-        return index;
-      })
+    const all = ids.map((item: string, index: number) => {
+      return index;
+    });
 
-    if (id === "all") {
-      setFindIdx(all);
+    if (id === 'all') {
+      setIndexesFindId(all);
     } else {
-      setFindIdx(findIndexes);
+      setIndexesFindId(findIndexes);
     }
-  }
-
-
+  };
 
   return (
     <div>
       <Chart
-        labels={charts.labels}
-        ids={charts.ids}
-        areas={charts.areas}
-        bars={charts.bars}
-        findIdx={findIdx}
+        labels={labels}
+        ids={ids}
+        areas={areas}
+        bars={bars}
+        findIdx={indexesFindId}
         onClickTag={onClickTag}
       />
-      <button onClick={() => onClickTag("all")}>전체</button>
-      {
-        [...new Set(charts.ids)].map((item) => (
-          <button key={item} onClick={() => onClickTag(item)}>{item}</button>
-        ))
-      }
-
+      <button onClick={() => onClickTag('all')}>전체</button>
+      {[...new Set(ids)].map(item => (
+        <button key={item} onClick={() => onClickTag(item)}>
+          {item}
+        </button>
+      ))}
     </div>
   );
 }
 
 export default App;
-
-
