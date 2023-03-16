@@ -52,19 +52,32 @@ export default function Home() {
 }
 
 const Main = styled.main`
-  width: 100%;
-  padding: 50px;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 150px;
   box-sizing: border-box;
+  background: linear-gradient(-45deg, #084464, #000101, #433abe);
+  background-size: 300% 300%;
+  animation: move-background 20s ease-in-out infinite;
+  color: #fff;
+  @keyframes move-background {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 `;
 const Section = styled.section`
-  width: 90vw;
-  border: 5px solid #243c98;
+  border: 5px solid #e0e0e0;
   border-radius: 17px;
   margin: 0 auto;
   padding: 20px 40px;
   box-sizing: border-box;
 `;
-const ChartContents = styled.div`
-  width: 100%;
-`;
+const ChartContents = styled.div``;
 const Title = styled.h1``;
