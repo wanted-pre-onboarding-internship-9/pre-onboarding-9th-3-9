@@ -9,7 +9,7 @@ interface IData {
 }
 
 interface IChartData {
-  xAxis: string[];
+  dateValues: string[];
   regionValues: string[];
   areaMaxValue: number;
   barMaxValue: number;

@@ -1,11 +1,11 @@
 import ApexChart from 'react-apexcharts';
 
-import { commaPerThousand } from '../common/utils';
+import { commaPerThousand, convertDateToTime } from '../common/utils';
 import { IChartProps } from '../types';
 
 function Chart({
   data = {
-    xAxis: [],
+    dateValues: [],
     regionValues: [],
     areaValues: [],
     barValues: [],
@@ -16,7 +16,7 @@ function Chart({
   setSelectedData,
 }: IChartProps) {
   const {
-    xAxis,
+    dateValues,
     areaValues,
     barValues,
     regionValues,
@@ -26,7 +26,7 @@ function Chart({
 
   const areaData = areaValues.map((value, index) => {
     return {
-      x: xAxis[index],
+      x: dateValues[index],
       y: value,
     };
   });
@@ -35,7 +35,7 @@ function Chart({
     const color =
       regionValues[index] === selectedData ? '#ff000060' : '#0074d960';
     return {
-      x: xAxis[index],
+      x: dateValues[index],
       y: value,
       fillColor: color,
       strokeColor: color,
@@ -95,9 +95,10 @@ function Chart({
               colors: '#ffffff',
               fontSize: '12px',
             },
+            formatter: value => convertDateToTime(value),
           },
           tooltip: { enabled: false },
-          tickAmount: Math.floor(xAxis.length / 3),
+          tickAmount: Math.floor(dateValues.length / 3),
         },
         yaxis: [
           {
@@ -170,7 +171,7 @@ function Chart({
         tooltip: {
           x: {
             show: true,
-            formatter: x => `${regionValues[x - 1]} (${xAxis[x]})`,
+            formatter: x => `${regionValues[x - 1]} (${dateValues[x]})`,
           },
         },
       }}

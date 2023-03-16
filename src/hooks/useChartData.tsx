@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import instance from '../apis/instance';
-import { convertDateToTime } from '../common/utils';
 import { IData } from '../types';
 
 const useChartData = () => {
@@ -20,7 +19,6 @@ const useChartData = () => {
     properties => properties.value_area
   );
   const barValues = Object.values(data).map(properties => properties.value_bar);
-  const xAxis = Object.keys(data).map(date => convertDateToTime(date));
   const regionValues = Object.values(data).map(properties => properties.id);
   const areaMaxValue = Math.max(...areaValues);
   const barMaxValue = Math.max(...barValues);
@@ -30,7 +28,7 @@ const useChartData = () => {
 
   return {
     data: {
-      xAxis,
+      dateValues,
       regionValues,
       areaMaxValue,
       barMaxValue,
