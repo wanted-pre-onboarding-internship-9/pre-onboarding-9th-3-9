@@ -4,10 +4,10 @@ export interface IChart {
   value_bar: number;
 }
 
-export type TResponse = { [key: string]: IChart };
+export type Response = { [key: string]: IChart };
 
 export interface IListResponse {
   type: string;
   version: number;
-  response: TResponse;
+  response: Response;
 }
