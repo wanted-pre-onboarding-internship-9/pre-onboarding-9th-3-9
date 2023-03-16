@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-interface IButtonProps {
-  text: string;
-  isActivated: boolean;
-  onClick: () => void;
-}
+import { IButtonProps } from '../types';
 
 function Button({ text, onClick, isActivated }: IButtonProps) {
   return (

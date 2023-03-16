@@ -1,7 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Background from '../components/Background';
 import Button from '../components/Button';
 import Chart from '../components/Chart';
 import Logo from '../components/Logo';
@@ -18,7 +17,6 @@ function MainPage() {
 
   return (
     <StyledContainer>
-      <Background />
       <Logo />
       <StyledButtonBox>
         <Button
@@ -59,8 +57,23 @@ const StyledContainer = styled.div`
   width: 100vw;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
   gap: 10px;
+
+  background: linear-gradient(-45deg, #084464, #000101, #433abe);
+  background-size: 200% 200%;
+  animation: move-background 20s ease-in-out infinite;
+
+  @keyframes move-background {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 `;
 
 const StyledButtonBox = styled.div`

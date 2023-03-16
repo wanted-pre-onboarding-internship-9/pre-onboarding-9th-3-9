@@ -22,3 +22,9 @@ interface IChartProps {
   selectedData: string | null;
   setSelectedData: SetURLSearchParams;
 }
+
+interface IButtonProps {
+  text: string;
+  isActivated: boolean;
+  onClick: () => void;
+}
