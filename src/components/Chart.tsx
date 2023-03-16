@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   Area,
   Bar,
@@ -17,15 +17,14 @@ import useGetData from '../hooks/useGetData';
 import CustomTooltip from './CustomTooltip';
 
 const Chart = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
   const { chartData, filterArea } = useGetData();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <>
-      {filterArea.map(item => (
-        <StButton key={item} onClick={() => navigate('/' + item)}>
-          {item}
+      {filterArea.map(area => (
+        <StButton key={area} onClick={() => setSearchParams({ id: area })}>
+          {area}
         </StButton>
       ))}
       <ResponsiveContainer width='100%' height={500}>
@@ -67,12 +66,14 @@ const Chart = () => {
             barSize={20}
             fill='#413ea0'
             fillOpacity={0.5}>
-            {chartData?.map(item => (
+            {chartData?.map(area => (
               <Cell
-                key={item.time}
-                fill={item.id === id ? '#FFAF00' : '#413ea0'}
-                fillOpacity={item.id === id ? 1 : 0.5}
-                onClick={() => navigate('/' + item.id)}
+                key={area.time}
+                fill={
+                  area.id === searchParams.get('id') ? '#FFAF00' : '#413ea0'
+                }
+                fillOpacity={area.id === searchParams.get('id') ? 1 : 0.5}
+                onClick={() => setSearchParams({ id: area.id })}
               />
             ))}
           </Bar>
