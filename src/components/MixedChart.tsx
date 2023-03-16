@@ -9,7 +9,11 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js';
-import type { ChartType, TooltipItem } from 'chart.js';
+import type {
+  ChartType,
+  ScriptableLineSegmentContext,
+  TooltipItem,
+} from 'chart.js';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { Chart, getElementsAtEvent } from 'react-chartjs-2';
 import styled from 'styled-components';
@@ -57,7 +61,10 @@ export default function MixedChart(props: ChartProps) {
 
   const [areaColor, setAreaColor] = useState<string[]>([]);
   const [barColor, setBarColor] = useState<string[]>([]);
+
   const idArr = chartData.map(el => el.id);
+  const barArr = chartData.map(el => el.value_bar);
+  const areaArr = chartData.map(el => el.value_area);
 
   useEffect(() => {
     if (!chartData && !searchParamsState) return;
@@ -65,22 +72,14 @@ export default function MixedChart(props: ChartProps) {
       (setBarColor(changeAllColor(chartData, 'rgba(23,70,162 ,0.9)')),
       setAreaColor(changeAllColor(chartData, 'rgba(64,192,36 ,1)')));
     searchParamsState !== '전체' &&
-      (setBarColor(
+      setBarColor(
         changeColor(
           chartData,
           searchParamsState,
           'rgba(23, 70, 162, 0.9)',
           'rgba(23, 70, 162, 0.3)'
         )
-      ),
-      setAreaColor(
-        changeColor(
-          chartData,
-          searchParamsState,
-          'rgba(64,192,36 ,1)',
-          'rgba(64,192,36 ,0.2)'
-        )
-      ));
+      );
   }, [searchParamsState, chartData]);
 
   const chartRef = useRef();
@@ -97,32 +96,43 @@ export default function MixedChart(props: ChartProps) {
     labels: date,
     datasets: [
       {
-        type: 'bar' as const,
-        label: 'bar',
-        yAxisID: 'y1',
-        data: chartData.map(el => el.value_bar),
-        backgroundColor: barColor,
-        tension: 0.4,
-        id: idArr,
-      },
-      {
         type: 'line' as const,
         label: 'area',
         axis: 'y',
-        data: chartData.map(el => el.value_area),
+        data: areaArr,
         fill: true,
-        backgroundColor: 'rgba(64,192,36 ,0.3)',
+        backgroundColor: areaColor,
         pointBorderColor: areaColor,
         tension: 0.4,
         id: idArr,
         pointBorderWidth: 7,
         hoverBorderWidth: 20,
+        segment: {
+          backgroundColor: (ctx: ScriptableLineSegmentContext) => {
+            const findIdx = ctx.p0DataIndex;
+            if (searchParamsState === '전체') return 'rgba(64,192,36 ,1)';
+            else
+              return idArr[findIdx] === searchParamsState
+                ? 'rgba(64,192,36 ,1)'
+                : 'rgba(64,192,36 ,0.2)';
+          },
+        },
+      },
+      {
+        type: 'bar' as const,
+        label: 'bar',
+        yAxisID: 'y1',
+        data: barArr,
+        backgroundColor: barColor,
+        tension: 0.4,
+        id: idArr,
       },
     ],
   };
   const options = {
     scales: {
       y: {
+        max: Math.max(...areaArr) * 2,
         pointRadius: 5,
         pointHoverRadius: 15,
         title: {
