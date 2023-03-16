@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import App from './App';
 import './index.css';
 import Home from './page/Home';
 import NotFound from './page/NotFound';
@@ -10,7 +9,7 @@ import QueryParmRoute from './page/QueryParmRoute';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <Outlet />,
     errorElement: <NotFound />,
     children: [
       {
