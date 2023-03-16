@@ -1,22 +1,28 @@
 import ApexChart from 'react-apexcharts';
 
-import { commaPerThousand, convertDateToTime } from '../common/utils';
+import { commaPerThousand } from '../common/utils';
 import { IChartProps } from '../types';
 
 function Chart({
-  data = {},
+  data = {
+    xAxis: [],
+    regionValues: [],
+    areaValues: [],
+    barValues: [],
+    areaMaxValue: 0,
+    barMaxValue: 0,
+  },
   selectedData = null,
   setSelectedData,
 }: IChartProps) {
-  const xAxis = Object.keys(data).map(date => convertDateToTime(date));
-  const areaValues = Object.values(data).map(
-    properties => properties.value_area
-  );
-  const barValues = Object.values(data).map(properties => properties.value_bar);
-  const regionValues = Object.values(data).map(properties => properties.id);
-
-  const areaMaxValue = Math.max(...areaValues);
-  const barMaxValue = Math.max(...barValues);
+  const {
+    xAxis,
+    areaValues,
+    barValues,
+    regionValues,
+    areaMaxValue,
+    barMaxValue,
+  } = data;
 
   const areaData = areaValues.map((value, index) => {
     return {
@@ -164,7 +170,7 @@ function Chart({
         tooltip: {
           x: {
             show: true,
-            formatter: y => regionValues[y - 1],
+            formatter: x => `${regionValues[x - 1]} (${xAxis[x]})`,
           },
         },
       }}

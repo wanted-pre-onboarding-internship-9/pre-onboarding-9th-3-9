@@ -8,8 +8,17 @@ interface IData {
   };
 }
 
+interface IChartData {
+  xAxis: string[];
+  regionValues: string[];
+  areaMaxValue: number;
+  barMaxValue: number;
+  areaValues: number[];
+  barValues: number[];
+}
+
 interface IChartProps {
-  data?: IData;
+  data: IChartData;
   selectedData: string | null;
   setSelectedData: SetURLSearchParams;
 }

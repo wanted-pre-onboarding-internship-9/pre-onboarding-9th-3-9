@@ -8,7 +8,7 @@ function Logo() {
 export default React.memo(Logo);
 
 const StyledLogo = styled.div`
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: white;
   font-style: italic;

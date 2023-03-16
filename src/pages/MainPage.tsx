@@ -5,16 +5,12 @@ import Background from '../components/Background';
 import Button from '../components/Button';
 import Chart from '../components/Chart';
 import Logo from '../components/Logo';
-import useData from '../hooks/useData';
+import useChartData from '../hooks/useChartData';
 
 function MainPage() {
-  const { data } = useData();
+  const { data, dedupRegions, dateRange } = useChartData();
+  const [startDate, endDate] = dateRange;
   const [selectedRegion, setSelectedRegion] = useSearchParams();
-
-  const regions = Object.values(data || {}).map(properties => properties.id);
-  const dedupRegions = regions.filter(
-    (element, index) => regions.indexOf(element) === index
-  );
 
   const handleFilter = (region: string) => {
     setSelectedRegion({ id: region });
@@ -39,11 +35,14 @@ function MainPage() {
           />
         ))}
       </StyledButtonBox>
+      {startDate && (
+        <StyledDateRange>{`${startDate} ~ ${endDate}`}</StyledDateRange>
+      )}
       <StyledChartBox>
         <Chart
           data={data}
           selectedData={selectedRegion.get('id')}
-          setSelectedData={setSelectedRegion}
+          setSelectedData={handleFilter}
         />
       </StyledChartBox>
     </StyledContainer>
@@ -61,6 +60,7 @@ const StyledContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: transparent;
+  gap: 10px;
 `;
 
 const StyledButtonBox = styled.div`
@@ -69,6 +69,14 @@ const StyledButtonBox = styled.div`
   height: 50px;
   padding-top: 1em;
   margin-top: 2em;
+`;
+
+const StyledDateRange = styled.div`
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  font-style: italic;
+  user-select: none;
 `;
 
 const StyledChartBox = styled.div`
