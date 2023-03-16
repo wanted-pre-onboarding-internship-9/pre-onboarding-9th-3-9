@@ -1,7 +1,9 @@
-import ChartPage from './pages/ChartPage';
+import { RouterProvider } from 'react-router-dom';
+
+import router from './shared/Router';
 
 function App() {
-  return <ChartPage />;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
