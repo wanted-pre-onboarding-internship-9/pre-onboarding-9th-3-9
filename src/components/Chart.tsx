@@ -1,16 +1,42 @@
+import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-const Chart = ({ labels, ids, areas, bars, fill, onClickTag }: any) => {
+type TChartProp = {
+  labels: string[]
+  ids: string[]
+  areas: number[]
+  bars: number[]
+  findIdx: number[]
+  onClickTag: (id: string) => void
+}
+
+const Chart = ({ labels, ids, areas, bars, findIdx, onClickTag }: TChartProp) => {
   const series = [
     {
       name: 'bar',
       type: 'column',
-      data: bars,
+      data: bars.map((value, idx) => {
+        const color =
+          findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
+        return {
+          x: labels[idx],
+          y: value,
+          fillColor: color,
+        }
+      }),
     },
     {
       name: 'area',
       type: 'area',
-      data: areas,
+      data: areas.map((value, idx) => {
+        const color =
+          findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
+        return {
+          x: labels[idx],
+          y: value,
+          fillColor: color,
+        }
+      }),
     },
   ]
 
@@ -22,7 +48,9 @@ const Chart = ({ labels, ids, areas, bars, fill, onClickTag }: any) => {
       stacked: false,
       events: {
         dataPointSelection: function (event: any, chartContext: any, config: any) {
-          onClickTag(ids[config.dataPointIndex] as string);
+          if (config.dataPointIndex !== null) {
+            onClickTag(ids[config.dataPointIndex] as string);
+          }
         },
       }
     },
@@ -38,18 +66,17 @@ const Chart = ({ labels, ids, areas, bars, fill, onClickTag }: any) => {
     legend: {
       show: false,
     },
-    fill: fill,
-    // fill: {
-    //   opacity: [0.85, 0.65, 1],
-    //   gradient: {
-    //     inverseColors: true,
-    //     shade: 'light',
-    //     type: 'vertical',
-    //     opacityFrom: 0.85,
-    //     opacityTo: 0.55,
-    //     stops: [0, 100, 100, 100],
-    //   }
-    // },
+    fill: {
+      opacity: [0.85, 0.65, 1],
+      gradient: {
+        inverseColors: true,
+        shade: 'light',
+        type: 'vertical',
+        opacityFrom: 0.85,
+        opacityTo: 0.55,
+        stops: [0, 100, 100, 100],
+      }
+    },
     labels: labels,
     markers: {
       size: 0,

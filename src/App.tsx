@@ -13,6 +13,8 @@ function App() {
     bars: [],
   });
 
+  const [findIdx, setFindIdx] = useState<number[]>([]);
+
   let isInit = false;
 
   useEffect(() => {
@@ -28,7 +30,13 @@ function App() {
           const areas = Object.values(responseData).map((item: any) => item.value_area as number);
           const bars = Object.values(responseData).map((item: any) => item.value_bar as number);
 
+          setFindIdx(ids
+            .map((item, index) => {
+              return index;
+            }));
+
           setCharts({ labels, ids, areas, bars });
+
         })
         .catch(error => {
           console.log(error);
@@ -36,17 +44,6 @@ function App() {
     }
   }, []);
 
-  const [stateFill, setStateFill] = useState<any>({
-    opacity: [0.85, 0.65, 1],
-    gradient: {
-      inverseColors: true,
-      shade: 'light',
-      type: 'vertical',
-      opacityFrom: 0.85,
-      opacityTo: 0.55,
-      stops: [0, 100, 100, 100],
-    },
-  });
 
   const onClickTag = (id: string) => {
 
@@ -57,29 +54,19 @@ function App() {
       })
       .filter((item) => item !== -1);
 
-    const cfill = {
-      opacity: [0.85, 0.65, 1],
-      colors: [function ({ dataPointIndex, seriesIndex }: any) {
+    const all = charts.ids
+      .map((item, index) => {
+        return index;
+      })
 
-        if (findIndexes.includes(dataPointIndex)) {
-          if (seriesIndex === 0) {
-            return '#0d9df2'
-          } else {
-            return '#59edbb'
-          }
-        } else {
-          if (seriesIndex === 0) {
-            return '#cde9fc'
-          } else {
-            return '#e5fcf4'
-          }
-        }
-
-      }],
+    if (id === "all") {
+      setFindIdx(all);
+    } else {
+      setFindIdx(findIndexes);
     }
-
-    setStateFill(cfill)
   }
+
+
 
   return (
     <div>
@@ -88,9 +75,10 @@ function App() {
         ids={charts.ids}
         areas={charts.areas}
         bars={charts.bars}
-        fill={stateFill}
+        findIdx={findIdx}
         onClickTag={onClickTag}
       />
+      <button onClick={() => onClickTag("all")}>전체</button>
       {
         [...new Set(charts.ids)].map((item) => (
           <button key={item} onClick={() => onClickTag(item)}>{item}</button>
