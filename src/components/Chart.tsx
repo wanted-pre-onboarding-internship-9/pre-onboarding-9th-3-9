@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Area,
@@ -20,8 +21,13 @@ const Chart = () => {
   const { chartData, filterArea } = useGetData();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  useEffect(() => {
+    setSearchParams({ id: '전체' });
+  }, []);
+
   return (
-    <>
+    <StWrap>
+      <h1>Flexsys</h1>
       {filterArea.map(area => (
         <StButton key={area} onClick={() => setSearchParams({ id: area })}>
           {area}
@@ -86,11 +92,15 @@ const Chart = () => {
           />
         </ComposedChart>
       </ResponsiveContainer>
-    </>
+    </StWrap>
   );
 };
 
 export default Chart;
+
+const StWrap = styled.div`
+  text-align: center;
+`;
 
 const StButton = styled.button`
   border: none;
