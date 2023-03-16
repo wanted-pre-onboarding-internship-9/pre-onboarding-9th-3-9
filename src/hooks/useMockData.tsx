@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+
 import instance from '../apis/instance';
 
 function useMockData() {
-
   const [charts, setCharts] = useState<any>({
     labels: [],
     ids: [],

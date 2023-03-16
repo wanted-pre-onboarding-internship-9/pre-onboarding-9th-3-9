@@ -1,50 +1,38 @@
-import Chart from './components/Chart';
-import { TChart } from './types/chartTypes';
-import useMockData from './hooks/useMockData';
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
+
+import Footer from './components/Footer';
+import Header from './components/Header';
 
 function App() {
-
-  const [mockData, indexesFindId, setIndexesFindId] = useMockData();
-
-  const { labels, ids, areas, bars }: TChart = mockData;
-
-  const onClickTag = (id: string) => {
-    const findIndexes = ids
-      .map((item: string, index: number) => {
-        if (item === id) return index;
-        else return -1;
-      })
-      .filter((mapItem: number) => mapItem !== -1);
-
-    const all = ids.map((item: string, index: number) => {
-      return index;
-    });
-
-    if (id === 'all') {
-      setIndexesFindId(all);
-    } else {
-      setIndexesFindId(findIndexes);
-    }
-  };
-
   return (
-    <div>
-      <Chart
-        labels={labels}
-        ids={ids}
-        areas={areas}
-        bars={bars}
-        findIdx={indexesFindId}
-        onClickTag={onClickTag}
-      />
-      <button onClick={() => onClickTag('all')}>전체</button>
-      {[...new Set(ids)].map(item => (
-        <button key={item} onClick={() => onClickTag(item)}>
-          {item}
-        </button>
-      ))}
-    </div>
+    <STLayoutWrap>
+      <Header />
+      <STBodyWrap>
+        <Outlet />
+      </STBodyWrap>
+      <Footer />
+    </STLayoutWrap>
   );
 }
 
 export default App;
+
+const STLayoutWrap = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+const STBodyWrap = styled.div`
+  width: 100%;
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;

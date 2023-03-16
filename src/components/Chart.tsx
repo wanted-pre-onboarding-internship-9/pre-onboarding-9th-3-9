@@ -1,13 +1,13 @@
 import ReactApexChart from 'react-apexcharts';
 
-type TChartProp = {
+interface IChartProp {
   labels: string[];
   ids: string[];
   areas: number[];
   bars: number[];
   findIdx: number[];
   onClickTag: (id: string) => void;
-};
+}
 
 const Chart = ({
   labels,
@@ -16,7 +16,7 @@ const Chart = ({
   bars,
   findIdx,
   onClickTag,
-}: TChartProp) => {
+}: IChartProp) => {
   const series = [
     {
       name: 'bar',
@@ -34,7 +34,7 @@ const Chart = ({
       name: 'area',
       type: 'area',
       data: areas.map((value, idx) => {
-        const color = findIdx.includes(idx) ? '#0d9df2' : '#cde9fc';
+        const color = findIdx.includes(idx) ? '#00E396' : '#c6f5e5';
         return {
           x: labels[idx],
           y: value,
@@ -46,19 +46,17 @@ const Chart = ({
 
   const options: any = {
     chart: {
-      id: 'mychart',
-      height: 350,
       type: 'line',
       stacked: false,
       events: {
-        click: function (
+        dataPointSelection: function (
           event: any,
           chartContext: any,
           config: any
         ) {
-          if (config.dataPointIndex !== -1) {
+          setTimeout(() => {
             onClickTag(ids[config.dataPointIndex] as string);
-          }
+          }, 10);
         },
       },
     },
@@ -68,7 +66,15 @@ const Chart = ({
       },
     },
     legend: {
-      show: false,
+      show: true,
+      position: 'top',
+      markers: {
+        width: 12,
+        height: 12,
+        strokeWidth: 0,
+        strokeColor: '#fff',
+        radius: 12,
+      },
     },
     fill: {
       opacity: [0.85, 0.65, 1],
@@ -81,6 +87,17 @@ const Chart = ({
         stops: [0, 100, 100, 100],
       },
     },
+    dataLabels: {
+      style: {
+        colors: ['#113dcf', '#089e53'],
+      },
+      enabled: true,
+      enabledOnSeries: [0, 1],
+    },
+    noData: {
+      text: 'No Data',
+    },
+
     labels: labels,
     markers: {
       size: 0,
@@ -100,6 +117,7 @@ const Chart = ({
         labels: {
           style: {
             color: '#008FFB',
+            fontWeight: 600,
           },
         },
         title: {
@@ -127,6 +145,7 @@ const Chart = ({
         labels: {
           style: {
             color: '#00E396',
+            fontWeight: 600,
           },
         },
         title: {
@@ -138,6 +157,10 @@ const Chart = ({
           offsetX: 10,
           offsetY: -115,
         },
+        forceNiceScale: true,
+        min: 0,
+        max: Math.max(...areas) * 2,
+        tickAmount: 4,
       },
     ],
     tooltip: {
@@ -161,7 +184,14 @@ const Chart = ({
   };
 
   return (
-    <ReactApexChart options={options} series={series} type='bar' height={350} />
+    <ReactApexChart
+      options={options}
+      series={series}
+      type='bar'
+      background={'#ffffff13'}
+      width='100%'
+      height='100%'
+    />
   );
 };
 
