@@ -3,6 +3,7 @@ import ReactApexChart from 'react-apexcharts';
 import { renderToString } from 'react-dom/server';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { commaPerThousand } from '../common/utils';
 import { useChartData } from '../hooks/useChartData';
 import { YAxisData } from '../types/chartTypes';
 import Tooltip from './Tooltip';
@@ -17,11 +18,15 @@ const Chart = () => {
   useEffect(() => {
     if (id !== '전체') {
       const highlightedBarArray = barArray.map((barData, index) => {
-        const fillColor = idArray[index] === id ? '#fb00a6' : '#008FFB';
+        const fillColor =
+          idArray[index] === id
+            ? 'rgba(0, 142, 250, 0.52)'
+            : 'rgba(0, 0, 0, 0.15)';
         return { ...barData, fillColor };
       });
       const highlightedAreaArray = areaArray.map((areaData, index) => {
-        const fillColor = idArray[index] === id ? '#fb00a6' : '#26E7A6';
+        const fillColor =
+          idArray[index] === id ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 0, 0, 0.15)';
         return { ...areaData, fillColor };
       });
       setBarArrayState([...highlightedBarArray]);
@@ -46,6 +51,7 @@ const Chart = () => {
   ];
 
   const options = {
+    colors: ['rgba(0, 142, 250, 0.52)', '#00E396'],
     stroke: {
       show: false,
     },
@@ -56,19 +62,27 @@ const Chart = () => {
       },
     },
     markers: {
-      size: 5,
+      size: 4,
     },
     labels: dateTimeArray,
     yaxis: [
       {
-        title: {
-          text: 'value_area',
-        },
-      },
-      {
         opposite: true,
         title: {
           text: 'value_bar',
+        },
+        labels: {
+          formatter: (value: number) => commaPerThousand(Math.floor(value)),
+        },
+      },
+      {
+        max: 200,
+        colors: ['#000000', '#000000'],
+        title: {
+          text: 'value_area',
+        },
+        labels: {
+          formatter: (value: number) => commaPerThousand(Math.floor(value)),
         },
       },
     ],

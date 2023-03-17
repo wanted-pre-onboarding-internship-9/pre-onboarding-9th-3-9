@@ -18,12 +18,12 @@ export const useChartData = () => {
       const areaArray = Object.values(response).map((item, index) => ({
         x: dateTimeArray[index],
         y: item.value_area,
-        fillColor: '#26E7A6',
+        fillColor: 'rgba(0, 0, 0, 0.15)',
       }));
       const barArray = Object.values(response).map((item, index) => ({
         x: dateTimeArray[index],
         y: item.value_bar,
-        fillColor: '#008FFB',
+        fillColor: 'rgba(0, 142, 250, 0.52)',
       }));
       setChartData({ dateTimeArray, idArray, areaArray, barArray });
     });
