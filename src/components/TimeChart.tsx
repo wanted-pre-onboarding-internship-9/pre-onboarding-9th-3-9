@@ -8,6 +8,7 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
+  registerables,
 } from 'chart.js';
 import type {
   ChartType,
@@ -21,6 +22,7 @@ import styled from 'styled-components';
 
 import { theme } from '../styles/theme';
 
+ChartJS.register(...registerables);
 ChartJS.register(
   BarElement,
   CategoryScale,
@@ -188,5 +190,12 @@ export default function TimeChart(props: ChartProps) {
   );
 }
 
-const Base = styled.div``;
-const Container = styled.div``;
+const Base = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Container = styled.div`
+  width: 80vw;
+  height: 80vh;
+`;
