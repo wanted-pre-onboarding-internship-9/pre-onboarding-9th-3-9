@@ -9,6 +9,4 @@ export const instance = axios.create({
   },
 });
 
-export const DataAPI = {
-  getData: () => instance.get(''),
-};
+export const getData = () => instance.get('');

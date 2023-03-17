@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { DataAPI } from '../apis/instance';
+import { getData } from '../apis/instance';
 import { IChartData, IMockData } from '../types/types';
 
 const useGetData = () => {
   const [mockData, setMockData] = useState<IMockData>();
 
   useEffect(() => {
-    DataAPI.getData().then(res => {
+    getData().then(res => {
       setMockData(res.data.response);
     });
   }, []);
