@@ -9,7 +9,7 @@ function Filter(props: FilterPropsType) {
   const value = useContext(ContextAPI);
   const dataId = new Set(value.map((value: ResponseDataType) => value.id));
   const buttonId = Array.from(dataId);
-  buttonId.push('');
+  buttonId.push('전체');
 
   return (
     <ButtonGroup spacing='6'>
