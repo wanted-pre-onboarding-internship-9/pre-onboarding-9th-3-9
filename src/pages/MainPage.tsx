@@ -10,9 +10,15 @@ function MainPage() {
   const { data, dedupRegions, dateRange } = useChartData();
   const [startDate, endDate] = dateRange;
   const [selectedRegion, setSelectedRegion] = useSearchParams();
-
   const handleFilter = (region: string) => {
     setSelectedRegion({ id: region });
+  };
+  const handleQueryDelete = () => {
+    const param = selectedRegion.get('id');
+    if (param) {
+      selectedRegion.delete('id');
+      setSelectedRegion(selectedRegion);
+    }
   };
 
   return (
@@ -21,8 +27,8 @@ function MainPage() {
       <StyledButtonBox>
         <Button
           text='전체'
-          isActivated={'whole' === selectedRegion.get('id')}
-          onClick={() => handleFilter('whole')}
+          isActivated={!selectedRegion.get('id')}
+          onClick={handleQueryDelete}
         />
         {dedupRegions.map(region => (
           <Button
