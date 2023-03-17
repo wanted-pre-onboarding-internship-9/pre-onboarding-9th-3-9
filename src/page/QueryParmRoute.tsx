@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { useSearchParamsState } from '../hooks/useParams';
+import { useSearchParamsState } from '../hooks/useSearchParamsState';
 
 type RouteProps = {
   children: React.ReactElement;
