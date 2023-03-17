@@ -7,7 +7,8 @@ import {
   ChartDataType,
   ChartPropsType,
   ResponseDataType,
-  SeriesType,
+  initAnnotationDataType,
+  timeIdObjType,
 } from '../common/Types';
 
 const initBarData = {
@@ -22,12 +23,28 @@ const initAreaData = {
   data: [],
 };
 
+const initAnnotationData = {
+  x: undefined,
+  opacity: 0.2,
+  strokeDashArray: 0,
+  borderColor: '#A5978B',
+  label: {
+    style: {
+      color: '#fff',
+      background: '#A5978B',
+    },
+    text: '',
+  },
+};
+
 const options: ApexOptions = {
   chart: {
-    //전체 차트 옵션
     height: 350,
     type: 'line',
     stacked: false,
+  },
+  annotations: {
+    xaxis: [],
   },
   stroke: {
     width: [0, 2, 5],
@@ -50,9 +67,7 @@ const options: ApexOptions = {
       stops: [0, 100, 100, 100],
     },
   },
-  labels: [
-    // label 채우기
-  ],
+  labels: [],
   markers: {
     size: 0,
   },
@@ -112,58 +127,26 @@ function Chart(props: ChartPropsType) {
   const { selectedId } = props;
   const [chartData, setChartData] = useState<ChartDataType>();
   const [chartOptions, setChartOptions] = useState(options);
-  const [idArray, setIdArray] = useState<string[]>([]);
+  const [timeIdObj, setTimeIdObj] = useState<timeIdObjType[]>([]);
 
-  const changeOptionColor = () => {
-    if (selectedId === '') {
-      if (options.fill) {
-        // setChartOptions({
-        //   ...chartOptions,
-        //   fill: {
-        //     ...chartOptions.fill,
-        //     colors: [
-        //       '#2E93fA',
-        //       '#66DA26',
-        //       // function (value: any, seriesIndex: number, w: any) {
-        //       //   if (idArray[seriesIndex] === selectedId) {
-        //       //     console.log(seriesIndex);
-        //       //     return '#000000';
-        //       //   } else {
-        //       //     return '#000000';
-        //       //   }
-        //       // },
-        //     ],
-        //   },
-        // });
-        // options.fill.colors = ['#E91E63', '#E91E63'];
-      }
-    }
-    if (selectedId !== '') {
-      if (options.fill) {
-        // setChartOptions({
-        //   ...options,
-        //   fill: { ...options.fill, colors: ['#E91E63', '#E91E63'] },
-        // });
-        // setChartOptions({
-        //   ...chartOptions,
-        //   fill: {
-        //     ...chartOptions.fill,
-        //     colors: [
-        //       '#E91E63',
-        //       '#FF9800',
-        //       // function (value: any, seriesIndex: number, w: any) {
-        //       //   if (idArray[seriesIndex] === selectedId) {
-        //       //     console.log(seriesIndex);
-        //       //     return '#000000';
-        //       //   } else {
-        //       //     return '#000000';
-        //       //   }
-        //       // },
-        //     ],
-        //   },
-        // });
-        // options.fill.colors = ['#E91E63', '#E91E63'];
-      }
+  const calcXaxis = () => {
+    const [data] = timeIdObj.filter(
+      (item: timeIdObjType) => item.selected === selectedId
+    );
+    return data.value.map(item => ({
+      ...initAnnotationData,
+      x: item,
+      label: { ...initAnnotationData.label, text: selectedId },
+    }));
+  };
+
+  const changeOptionColor = (callback: () => initAnnotationDataType[]) => {
+    if (selectedId !== '전체') {
+      const selectedData = callback();
+      setChartOptions({
+        ...chartOptions,
+        annotations: { xaxis: [...selectedData] },
+      });
     }
   };
 
@@ -174,12 +157,12 @@ function Chart(props: ChartPropsType) {
     const timeXaxis = Object.keys(response).map(
       (value: string) => value.split(' ')[1]
     );
-    console.log(timeXaxis, options, chartOptions);
     setChartOptions({ ...options, labels: [...timeXaxis] });
     const value_area = series.map(
       (value: ResponseDataType) => value.value_area
     );
     const value_bar = series.map((value: ResponseDataType) => value.value_bar);
+    value_bar.push(0);
     const barData = { ...initBarData, data: [...value_bar] };
     const areaData = { ...initAreaData, data: [...value_area] };
     const objData: ChartDataType = { series: [] };
@@ -187,9 +170,21 @@ function Chart(props: ChartPropsType) {
     tmpData.push(areaData);
     objData.series = [...tmpData];
     const value_id = series.map((value: ResponseDataType) => value.id);
-    setIdArray([...value_id]);
+
+    const dataId = new Set(value_id);
+    const buttonId = Array.from(dataId);
+    const timeIdObj = buttonId.map(value => ({ selected: value, value: [''] }));
+
+    for (let i = 0; i < buttonId.length; i += 1) {
+      const tmp = timeXaxis.filter(
+        (_, index) => value_id[index] === buttonId[i]
+      );
+      timeIdObj[i].value = [...tmp];
+    }
+
+    setTimeIdObj([...timeIdObj]); //useState 안해도 될듯
+
     setChartData(objData);
-    console.log(objData);
     if (options.tooltip) {
       options.tooltip.custom = function ({
         series,
@@ -214,11 +209,13 @@ function Chart(props: ChartPropsType) {
     }
   };
   useEffect(() => {
-    getInstance().then(() => changeOptionColor());
+    getInstance().then(() => {
+      changeOptionColor(calcXaxis);
+    });
   }, []);
 
   useEffect(() => {
-    changeOptionColor();
+    changeOptionColor(calcXaxis);
   }, [selectedId]);
 
   if (chartData) {
