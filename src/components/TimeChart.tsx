@@ -190,5 +190,12 @@ export default function TimeChart(props: ChartProps) {
   );
 }
 
-const Base = styled.div``;
-const Container = styled.div``;
+const Base = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Container = styled.div`
+  width: 80vw;
+  height: 80vh;
+`;
