@@ -45,7 +45,9 @@ export default function TimeChart(props: ChartProps) {
   const { dateValues, idValues, areaValues, barValues } = props;
   const { searchParamsState, setSearchParamsState } = useSearchParamsState({
     searchParamName: 'id',
+    defaultValue: '전체',
   });
+  console.log(searchParamsState);
   const [areaColor, setAreaColor] = useState<string[]>([]);
   const [barColor, setBarColor] = useState<string[]>([]);
 

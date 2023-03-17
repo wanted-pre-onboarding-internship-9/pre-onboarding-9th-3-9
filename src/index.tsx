@@ -4,7 +4,6 @@ import { ThemeProvider } from 'styled-components';
 
 import Home from './page/Home';
 import NotFound from './page/NotFound';
-import QueryParmRoute from './page/QueryParmRoute';
 import GlobalStyle from './styles/GlobalStyle';
 import './styles/index.css';
 import { theme } from './styles/theme';
@@ -18,11 +17,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: '/',
-        element: (
-          <QueryParmRoute require='id'>
-            <Home />
-          </QueryParmRoute>
-        ),
+        element: <Home />,
       },
     ],
   },
