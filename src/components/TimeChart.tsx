@@ -8,6 +8,7 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
+  registerables,
 } from 'chart.js';
 import type {
   ChartType,
@@ -21,6 +22,7 @@ import styled from 'styled-components';
 
 import { theme } from '../styles/theme';
 
+ChartJS.register(...registerables);
 ChartJS.register(
   BarElement,
   CategoryScale,
