@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import { useSearchParamsState } from '../hooks/useParams';
-import Button from './Button';
+import { useSearchParamsState } from '../hooks/useSearchParamsState';
+import Button from './ui/Button';
 
 type FilterProps = {
-  districts: string[];
+  districtValues: string[];
 };
 
-export default function Filter({ districts = [] }: FilterProps) {
+export default function Filter({ districtValues }: FilterProps) {
   const { searchParamsState, setSearchParamsState } = useSearchParamsState({
     searchParamName: 'id',
     defaultValue: '전체',
@@ -16,7 +16,7 @@ export default function Filter({ districts = [] }: FilterProps) {
   return (
     <Base>
       <FilterBody>
-        {districts.map(name => (
+        {districtValues.map(name => (
           <Button
             key={name}
             text={name}
@@ -33,10 +33,10 @@ const Base = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 10px auto 30px auto;
+  margin: 30px auto;
 `;
 const FilterBody = styled.div`
-  width: 50%;
+  width: 500px;
   display: flex;
   justify-content: space-between;
 `;

@@ -18,8 +18,8 @@ import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { Chart, getElementsAtEvent } from 'react-chartjs-2';
 import styled from 'styled-components';
 
-import { useSearchParamsState } from '../hooks/useParams';
-import { IChart } from '../types/types';
+import { useSearchParamsState } from '../hooks/useSearchParamsState';
+import { theme } from '../styles/theme';
 
 ChartJS.register(
   BarElement,
@@ -34,53 +34,43 @@ ChartJS.register(
 );
 
 type ChartProps = {
-  date: string[];
-  chartData: IChart[];
+  dateValues: string[];
+  idValues: string[];
+  areaValues: number[];
+  barValues: number[];
 };
-type TooltipType = TooltipItem<ChartType>;
+type ChartTooltip = TooltipItem<ChartType>;
 
-const changeAllColor = (chartData: IChart[], activeColor: string): string[] =>
-  chartData.map(() => activeColor);
-
-const changeColor = (
-  chartData: IChart[],
-  searchParamsState: string,
-  activeColor: string,
-  defaultColor: string
-): string[] =>
-  chartData.map(item =>
-    item.id === searchParamsState ? activeColor : defaultColor
-  );
-
-export default function MixedChart(props: ChartProps) {
-  const { date, chartData = [] } = props;
-
+export default function TimeChart(props: ChartProps) {
+  const { dateValues, idValues, areaValues, barValues } = props;
   const { searchParamsState, setSearchParamsState } = useSearchParamsState({
     searchParamName: 'id',
   });
-
   const [areaColor, setAreaColor] = useState<string[]>([]);
   const [barColor, setBarColor] = useState<string[]>([]);
 
-  const idArr = chartData.map(el => el.id);
-  const barArr = chartData.map(el => el.value_bar);
-  const areaArr = chartData.map(el => el.value_area);
-
   useEffect(() => {
-    if (!chartData && !searchParamsState) return;
-    searchParamsState === '전체' &&
-      (setBarColor(changeAllColor(chartData, 'rgba(23,70,162 ,0.9)')),
-      setAreaColor(changeAllColor(chartData, 'rgba(64,192,36 ,1)')));
-    searchParamsState !== '전체' &&
-      setBarColor(
-        changeColor(
-          chartData,
-          searchParamsState,
-          'rgba(23, 70, 162, 0.9)',
-          'rgba(23, 70, 162, 0.3)'
+    if (!searchParamsState) return;
+    if (searchParamsState === '전체') {
+      setAreaColor(idValues.map(() => `${theme.rgba.green_active}`));
+      setBarColor(idValues.map(() => `${theme.rgba.blue_active}`));
+    } else {
+      setAreaColor(
+        idValues.map(id =>
+          id === searchParamsState
+            ? `${theme.rgba.green_active}`
+            : `${theme.rgba.green_default}`
         )
       );
-  }, [searchParamsState, chartData]);
+      setBarColor(
+        idValues.map(id =>
+          id === searchParamsState
+            ? `${theme.rgba.blue_active}`
+            : `${theme.rgba.blue_default}`
+        )
+      );
+    }
+  }, [idValues, searchParamsState]);
 
   const chartRef = useRef();
   const onClick = (event: MouseEvent<HTMLCanvasElement>) => {
@@ -88,33 +78,29 @@ export default function MixedChart(props: ChartProps) {
     if (!chart) return;
     if (getElementsAtEvent(chart, event).length > 0) {
       const clickPointIdx = getElementsAtEvent(chart, event)[0].index;
-      setSearchParamsState(idArr[clickPointIdx]);
+      setSearchParamsState(idValues[clickPointIdx]);
     }
   };
 
   const data = {
-    labels: date,
+    labels: dateValues,
     datasets: [
       {
         type: 'line' as const,
         label: 'area',
         axis: 'y',
-        data: areaArr,
+        data: areaValues,
         fill: true,
         backgroundColor: areaColor,
         pointBorderColor: areaColor,
         tension: 0.4,
-        id: idArr,
-        pointBorderWidth: 7,
+        id: idValues,
+        pointBorderWidth: 5,
         hoverBorderWidth: 20,
         segment: {
           backgroundColor: (ctx: ScriptableLineSegmentContext) => {
             const findIdx = ctx.p0DataIndex;
-            if (searchParamsState === '전체') return 'rgba(64,192,36 ,1)';
-            else
-              return idArr[findIdx] === searchParamsState
-                ? 'rgba(64,192,36 ,1)'
-                : 'rgba(64,192,36 ,0.2)';
+            return areaColor[findIdx];
           },
         },
       },
@@ -122,31 +108,44 @@ export default function MixedChart(props: ChartProps) {
         type: 'bar' as const,
         label: 'bar',
         yAxisID: 'y1',
-        data: barArr,
+        data: barValues,
         backgroundColor: barColor,
         tension: 0.4,
-        id: idArr,
+        id: idValues,
       },
     ],
   };
   const options = {
     scales: {
+      x: {
+        ticks: {
+          color: `${theme.color.white}`,
+        },
+      },
       y: {
-        max: Math.max(...areaArr) * 2,
-        pointRadius: 5,
-        pointHoverRadius: 15,
+        ticks: {
+          color: `${theme.color.white}`,
+        },
         title: {
           display: true,
           text: 'area',
+          color: `${theme.color.white}`,
         },
         type: 'linear' as const,
         display: true,
         position: 'left' as const,
+        max: Math.max(...areaValues) * 2,
+        pointRadius: 5,
+        pointHoverRadius: 15,
       },
       y1: {
+        ticks: {
+          color: `${theme.color.white}`,
+        },
         title: {
           display: true,
           text: 'bar',
+          color: `${theme.color.white}`,
         },
         type: 'linear' as const,
         display: true,
@@ -163,18 +162,21 @@ export default function MixedChart(props: ChartProps) {
       mode: 'index' as const,
     },
     plugins: {
+      colors: {
+        enabled: false,
+      },
       tooltip: {
         displayColors: false,
         caretSize: 20,
-        backgroundColor: '#fff',
-        bodyColor: '#000',
-        borderColor: '#000',
+        backgroundColor: `${theme.color.white}`,
+        bodyColor: `${theme.color.black}`,
+        borderColor: `${theme.color.black}`,
         borderWidth: 1,
         padding: 20,
-        titleColor: '#000',
+        titleColor: `${theme.color.black}`,
         callbacks: {
-          afterBody: (tooltipItem: TooltipType[]): string =>
-            `id: ${idArr[tooltipItem[0].dataIndex]}`,
+          afterBody: (tooltipItem: ChartTooltip[]): string =>
+            `id: ${idValues[tooltipItem[0].dataIndex]}`,
         },
         titleFont: {
           size: 30,
