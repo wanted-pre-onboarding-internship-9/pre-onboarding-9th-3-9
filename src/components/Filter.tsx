@@ -1,6 +1,6 @@
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useSearchParamsState } from '../hooks/useSearchParamsState';
 import Button from './ui/Button';
 
 type FilterProps = {
@@ -8,20 +8,23 @@ type FilterProps = {
 };
 
 export default function Filter({ districtValues }: FilterProps) {
-  const { searchParamsState, setSearchParamsState } = useSearchParamsState({
-    searchParamName: 'id',
-    defaultValue: '전체',
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParam = searchParams.get('id');
 
   return (
     <Base>
       <FilterBody>
+        <Button
+          text='전체'
+          isActivated={!searchParam}
+          onClick={() => setSearchParams()}
+        />
         {districtValues.map(name => (
           <Button
             key={name}
             text={name}
-            isActivated={searchParamsState === name}
-            onClick={() => setSearchParamsState(name)}
+            isActivated={searchParam === name}
+            onClick={() => setSearchParams({ id: name })}
           />
         ))}
       </FilterBody>

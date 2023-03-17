@@ -20,10 +20,8 @@ export function useChartDataState() {
   const barValues: number[] = Object.values(resData).map(obj => obj.value_bar);
 
   const idValues = Object.values(resData).map(obj => obj.id);
-  const districtValues: string[] = ['전체'];
-  idValues.forEach(
-    id => !districtValues.includes(id) && districtValues.push(id)
-  );
+
+  const districtValues = [...new Set(idValues)];
 
   return {
     isLoading,

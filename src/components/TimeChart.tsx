@@ -14,11 +14,11 @@ import type {
   ScriptableLineSegmentContext,
   TooltipItem,
 } from 'chart.js';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useRef } from 'react';
 import { Chart, getElementsAtEvent } from 'react-chartjs-2';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useSearchParamsState } from '../hooks/useSearchParamsState';
 import { theme } from '../styles/theme';
 
 ChartJS.register(
@@ -43,36 +43,19 @@ type ChartTooltip = TooltipItem<ChartType>;
 
 export default function TimeChart(props: ChartProps) {
   const { dateValues, idValues, areaValues, barValues } = props;
-  const { searchParamsState, setSearchParamsState } = useSearchParamsState({
-    searchParamName: 'id',
-    defaultValue: '전체',
-  });
-  console.log(searchParamsState);
-  const [areaColor, setAreaColor] = useState<string[]>([]);
-  const [barColor, setBarColor] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParam = searchParams.get('id') || '';
 
-  useEffect(() => {
-    if (!searchParamsState) return;
-    if (searchParamsState === '전체') {
-      setAreaColor(idValues.map(() => `${theme.rgba.green_active}`));
-      setBarColor(idValues.map(() => `${theme.rgba.blue_active}`));
-    } else {
-      setAreaColor(
-        idValues.map(id =>
-          id === searchParamsState
-            ? `${theme.rgba.green_active}`
-            : `${theme.rgba.green_default}`
-        )
-      );
-      setBarColor(
-        idValues.map(id =>
-          id === searchParamsState
-            ? `${theme.rgba.blue_active}`
-            : `${theme.rgba.blue_default}`
-        )
-      );
-    }
-  }, [idValues, searchParamsState]);
+  const areaColor = idValues.map(id =>
+    !searchParam || searchParam === id
+      ? `${theme.rgba.green_active}`
+      : `${theme.rgba.green_default}`
+  );
+  const barColor = idValues.map(id =>
+    !searchParam || searchParam === id
+      ? `${theme.rgba.blue_active}`
+      : `${theme.rgba.blue_default}`
+  );
 
   const chartRef = useRef();
   const onClick = (event: MouseEvent<HTMLCanvasElement>) => {
@@ -80,7 +63,7 @@ export default function TimeChart(props: ChartProps) {
     if (!chart) return;
     if (getElementsAtEvent(chart, event).length > 0) {
       const clickPointIdx = getElementsAtEvent(chart, event)[0].index;
-      setSearchParamsState(idValues[clickPointIdx]);
+      setSearchParams({ id: idValues[clickPointIdx] });
     }
   };
 
