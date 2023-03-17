@@ -22,7 +22,7 @@ const StyledButton = styled.button<{ isActivated: boolean }>`
   font-weight: bold;
   color: white;
   background: ${props => (props.isActivated ? '#1f5395' : 'none')};
-  border: 1px solid #fff;
+  border: 1px solid ${props => props.theme.color.white};
   border-radius: 15px;
   padding: 10px 20px;
   transition: all 0.3s;
