@@ -1,9 +1,13 @@
 import ReactDOM from 'react-dom/client';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  Navigate,
+  Outlet,
+  RouterProvider,
+  createBrowserRouter,
+} from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import Home from './page/Home';
-import NotFound from './page/NotFound';
 import GlobalStyle from './styles/GlobalStyle';
 import './styles/index.css';
 import { theme } from './styles/theme';
@@ -12,7 +16,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Outlet />,
-    errorElement: <NotFound />,
+    errorElement: <Navigate replace to='/' />,
     children: [
       {
         index: true,
