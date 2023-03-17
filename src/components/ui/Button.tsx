@@ -27,5 +27,4 @@ const StyledButton = styled.button<{ isActivated: boolean }>`
   padding: 10px 20px;
   transition: all 0.3s;
   cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;

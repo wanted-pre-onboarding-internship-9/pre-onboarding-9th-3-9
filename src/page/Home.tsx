@@ -61,8 +61,8 @@ const Main = styled.main`
   text-align: center;
 `;
 const Section = styled.section`
+  width: 80%;
   margin: 0 auto;
-  padding: 20px 40px;
   box-sizing: border-box;
 `;
 const ChartContents = styled.div``;
