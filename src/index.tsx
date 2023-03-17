@@ -8,6 +8,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 
 import Home from './page/Home';
+import NotFound from './page/NotFound';
 import GlobalStyle from './styles/GlobalStyle';
 import './styles/index.css';
 import { theme } from './styles/theme';
@@ -16,12 +17,16 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Outlet />,
-    errorElement: <Navigate replace to='/' />,
+    errorElement: <NotFound />,
     children: [
       {
         index: true,
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '*',
+        element: <Navigate replace to='/' />,
       },
     ],
   },
