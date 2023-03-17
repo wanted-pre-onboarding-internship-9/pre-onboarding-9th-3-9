@@ -1,10 +1,14 @@
+import styled from 'styled-components';
+
 const Tooltip = ({ data }: PropsType) => {
   return (
-    <ul>
-      <li>id: {data.valueId}</li>
-      <li>value_area: {data.valueArea}</li>
-      <li>value_bar: {data.valueBar}</li>
-    </ul>
+    <StTooltipContainer>
+      <StUl>
+        <StLi>id: {data.valueId}</StLi>
+        <StLi>value_area: {data.valueArea}</StLi>
+        <StLi>value_bar: {data.valueBar}</StLi>
+      </StUl>
+    </StTooltipContainer>
   );
 };
 
@@ -17,3 +21,20 @@ type PropsType = {
 };
 
 export default Tooltip;
+
+const StLi = styled.li`
+  list-style: none;
+`;
+
+const StUl = styled.ul`
+  list-style: none;
+  padding: 0px;
+`;
+
+const StTooltipContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 10px;
+`;
