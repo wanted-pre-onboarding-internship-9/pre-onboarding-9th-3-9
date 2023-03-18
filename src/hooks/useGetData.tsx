@@ -22,8 +22,7 @@ const useGetData = () => {
   );
 
   const valueId = Object.values(mockData || [])?.map(item => item.id);
-  const filterArea = [...new Set(valueId)];
-  filterArea.push('전체');
+  const filterArea = ['전체', ...new Set(valueId)];
 
   return { chartData, filterArea };
 };

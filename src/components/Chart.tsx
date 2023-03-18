@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Area,
@@ -20,10 +19,6 @@ import CustomTooltip from './CustomTooltip';
 const Chart = () => {
   const { chartData, filterArea } = useGetData();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    setSearchParams({ id: '전체' });
-  }, []);
 
   return (
     <StWrap>
